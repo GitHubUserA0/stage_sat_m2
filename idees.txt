@@ -1,0 +1,6 @@
+- Bandit sur les clauses
+- Utiliser la communaute de structure (par ex en satisfaisant le litteral qui a le plus grand degre dans une communaute)
+- Utiliser le nb d'occurences qu'une variable est voisine d'une autre plutot que 0 ou 1, pour le voisiage et les configurations.
+- conserver apres redemarrage les poids des clauses /clauses avec moins de k litteraux (definir k)
+- redemarrage avec random partiel (au lieu de random total, on conserve des affectations de certaines variables qui satisfont certaines clauses) (lesquelles)
+- On conserve le poids des clauses à 1 ou 2 variables et celles qui expliquent des conflits difficiles (comme pre processing dans communaute de structure).
