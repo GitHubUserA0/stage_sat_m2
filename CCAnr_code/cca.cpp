@@ -726,6 +726,10 @@ void preprocess()
 }
 //end definition of preprocessor.h
 
+inline int multi_armed_bandit(int unsat_clauses[], int nb_unsat_clauses)
+{
+
+}
 
 static int pick_var(void)
 {
@@ -738,8 +742,6 @@ static int pick_var(void)
 	if(goodvar_stack_fill_pointer>0)
 	{
 
-		//if(goodvar_stack_fill_pointer<balancePar)
-		//{
 		best_var = goodvar_stack[0];
 		for(i=1; i<goodvar_stack_fill_pointer; ++i)
 		{
@@ -782,7 +784,8 @@ static int pick_var(void)
 
 	/*focused random walk*/
 
-	c = unsat_stack[rand()%unsat_stack_fill_pointer];
+	//c = unsat_stack[rand()%unsat_stack_fill_pointer];
+	c = multi_armed_bandit(unsat_stack,unsat_stack_fill_pointer);
 	clause_c = clause_lit[c];
 	best_var = clause_c[0].var_num;
 	for(k=1; k<clause_lit_count[c]; ++k)
@@ -809,7 +812,8 @@ void local_search(long long no_improv_times)
 {
 	int flipvar;
 	long long notime = 1 + no_improv_times;
-	
+	if (unsat_stack_fill_pointer==0)
+		return;
 	while(--notime)
 	{
 		step++;
