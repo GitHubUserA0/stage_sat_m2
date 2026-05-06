@@ -1,0 +1,3 @@
+0 - modifier le main pour conserver des infos entre les restarts
+1 - implémenter la conservation des poids des clauses
+2 - implémenter la conservation d'affectations partielles
