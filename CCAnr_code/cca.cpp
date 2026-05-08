@@ -726,7 +726,39 @@ void preprocess()
 }
 //end definition of preprocessor.h
 
-inline int multi_armed_bandit(int unsat_clauses[], int nb_unsat_clauses)
+int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
+{
+	int nb_unsat_cc_clauses = count_unsat_cc_clauses(unsat_clauses,nb_unsat_clauses);
+	int * unsat_cc_clauses;
+	unsat_cc_clauses = (int *) malloc(sizeof(int) * nb_unsat_cc_clauses);
+
+	if ( !unsat_cc_clauses )
+	{
+		printf("malloc failed\n");
+		return NULL;
+	}
+
+	int unstat_cc_clauses_ptr = 0;
+
+	for (int unsat_clause_index = 0 ; unsat_clause_index < nb_unsat_clauses ; unsat_clause_index ++)
+	{
+		int clause = unsat_clauses[unsat_clause_index];
+		int clause_size = clause_lit_count[clause];
+
+		for (int lit_index = 0 ; lit_index < clause_size ; lit_index ++)
+		{
+				lit current_lit = clause_lit[clause][lit_index];
+				if (conf_change[current_lit.var_num]==1)
+				{
+					unsat_cc_clauses[unstat_cc_clauses_ptr] = clause;
+					unstat_cc_clauses_ptr ++;
+				}
+		}
+	}
+	return unsat_cc_clauses;
+}
+
+inline int pull_arm_MAB(int unsat_cc_clauses[], int nb_unsat_cc_clauses)
 {
 
 }
@@ -785,7 +817,7 @@ static int pick_var(void)
 	/*focused random walk*/
 
 	//c = unsat_stack[rand()%unsat_stack_fill_pointer];
-	c = multi_armed_bandit(unsat_stack,unsat_stack_fill_pointer);
+	c = pull_arm_MAB(unsat_stack,unsat_stack_fill_pointer);
 	clause_c = clause_lit[c];
 	best_var = clause_c[0].var_num;
 	for(k=1; k<clause_lit_count[c]; ++k)
