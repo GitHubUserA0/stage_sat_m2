@@ -38,6 +38,6 @@ inline void sat(int clause);
 void init();
 void flip(int flipvar);
 int multi_armed_bandit(int unsat_clauses[],int nb_unsat_clauses);
-
+int* select_cc_unsat_clauses(int unsat_clauses[], int nb_unsat_clauses);
 #endif
 
