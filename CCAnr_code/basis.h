@@ -59,6 +59,7 @@ int		sat_var[MAX_CLAUSES];
 int		unsat_stack[MAX_CLAUSES];		//store the unsat clause number
 int		unsat_stack_fill_pointer;
 int		index_in_unsat_stack[MAX_CLAUSES];//which position is a clause in the unsat_stack
+int     unsat_cc_clauses_stack_fill_pointer;
 
 int		this_try_best_unsat_stack_fill_pointer;
 

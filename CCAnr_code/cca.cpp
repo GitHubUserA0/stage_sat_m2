@@ -729,16 +729,15 @@ void preprocess()
 int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
 {
 	int nb_unsat_cc_clauses = count_unsat_cc_clauses(unsat_clauses,nb_unsat_clauses);
-	int * unsat_cc_clauses;
-	unsat_cc_clauses = (int *) malloc(sizeof(int) * nb_unsat_cc_clauses);
+	int* unsat_cc_clauses_stack = (int*)malloc(sizeof(int) * nb_unsat_cc_clauses);
 
-	if ( !unsat_cc_clauses )
+	if ( !unsat_cc_clauses_stack )
 	{
 		printf("malloc failed\n");
 		return NULL;
 	}
 
-	int unstat_cc_clauses_ptr = 0;
+	unsat_cc_clauses_stack_fill_pointer = 0;
 
 	for (int unsat_clause_index = 0 ; unsat_clause_index < nb_unsat_clauses ; unsat_clause_index ++)
 	{
@@ -750,18 +749,15 @@ int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
 				lit current_lit = clause_lit[clause][lit_index];
 				if (conf_change[current_lit.var_num]==1)
 				{
-					unsat_cc_clauses[unstat_cc_clauses_ptr] = clause;
-					unstat_cc_clauses_ptr ++;
+					unsat_cc_clauses_stack[unsat_cc_clauses_stack_fill_pointer] = clause;
+					unsat_cc_clauses_stack_fill_pointer ++;
 				}
 		}
 	}
-	return unsat_cc_clauses;
+	return unsat_cc_clauses_stack;
 }
 
-inline int pull_arm_MAB(int unsat_cc_clauses[], int nb_unsat_cc_clauses)
-{
 
-}
 
 static int pick_var(void)
 {
@@ -815,9 +811,8 @@ static int pick_var(void)
 	update_clause_weights();
 
 	/*focused random walk*/
-
-	//c = unsat_stack[rand()%unsat_stack_fill_pointer];
-	c = pull_arm_MAB(unsat_stack,unsat_stack_fill_pointer);
+	int * unsat_cc_clauses_stack = find_unsat_cc_clauses(unsat_stack, unsat_stack_fill_pointer);
+	c = unsat_cc_clauses_stack[rand()%unsat_cc_clauses_stack_fill_pointer];
 	clause_c = clause_lit[c];
 	best_var = clause_c[0].var_num;
 	for(k=1; k<clause_lit_count[c]; ++k)
@@ -832,7 +827,7 @@ static int pick_var(void)
 			else if(score[v]==score[best_var]&&time_stamp[v]<time_stamp[best_var]) best_var = v;
 		}
 	}
-
+	free(unsat_cc_clauses_stack);
 	return best_var;
 }
 //set functions in the algorithm
@@ -849,23 +844,23 @@ void local_search(long long no_improv_times)
 	while(--notime)
 	{
 		step++;
-		
+
 		flipvar = pick_var();
 		flip(flipvar);
 		time_stamp[flipvar] = step;
-		
+
 		if(unsat_stack_fill_pointer < this_try_best_unsat_stack_fill_pointer)
 		{
 			this_try_best_unsat_stack_fill_pointer = unsat_stack_fill_pointer;
 			notime = 1 + no_improv_times;
 		}
-		
+
 		if(unsat_stack_fill_pointer == 0)
 		{
 			return;
 		}
 	}
-     
+
 	return;
 }
 void default_settings()
@@ -875,7 +870,7 @@ void default_settings()
 	p_scale = 0.3;
 	q_scale = 0.7;
 	threshold = 50;
-	
+
 	aspiration_active = false; //
 }
 bool parse_arguments(int argc, char ** argv)
@@ -883,7 +878,7 @@ bool parse_arguments(int argc, char ** argv)
 
 	bool flag_inst = false;
 	default_settings();
-	
+
 	for (int i=1; i<argc; i++)
 	{
 		if(strcmp(argv[i],"-inst")==0)
@@ -901,7 +896,7 @@ bool parse_arguments(int argc, char ** argv)
 			sscanf(argv[i], "%d", &seed);
 			continue;
 		}
-		
+
 		else if(strcmp(argv[i],"-aspiration")==0)
 		{
 			i++;
@@ -913,7 +908,7 @@ bool parse_arguments(int argc, char ** argv)
 			else 	aspiration_active = false;
 			continue;
 		}
-		
+
 		else if(strcmp(argv[i],"-swt_threshold")==0)
 		{
 			i++;
@@ -935,7 +930,7 @@ bool parse_arguments(int argc, char ** argv)
 			sscanf(argv[i], "%f", &q_scale);
 			continue;
 		}
-		
+
 		else if(strcmp(argv[i],"-ls_no_improv_steps")==0){
 			i++;
 			if(i>=argc) return false;
@@ -943,9 +938,9 @@ bool parse_arguments(int argc, char ** argv)
 			continue;
 		}
 		else return false;
-		
+
 	}
-	
+
 	if (flag_inst) return true;
 	else return false;
 
@@ -955,9 +950,9 @@ int main(int argc, char* argv[])
 	int     seed,i;
 	int		satisfy_flag=0;
 	struct 	tms start, stop;
-    
-    cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;	
-	
+
+    cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;
+
 	times(&start);
 
 	bool ret = parse_arguments(argc, argv);
@@ -970,15 +965,15 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	
+
     srand(seed);
-    
+
     if(unitclause_queue_end_pointer>0) preprocess();
-    
+
     build_neighbor_relation();
-    
+
     scale_ave=(threshold+1)*q_scale; //
-    
+
 	cout<<"c Instance: Number of variables = "<<num_vars<<endl;
 	cout<<"c Instance: Number of clauses = "<<num_clauses<<endl;
 	cout<<"c Instance: Ratio = "<<ratio<<endl;
@@ -992,16 +987,16 @@ int main(int argc, char* argv[])
 	cout<<"c Algorithmic: scale_ave = " << scale_ave << endl;
 	if(aspiration_active) cout<<"c Algorithmic: aspiration_active = true" << endl;
 	else cout<<"c Algorithmic: aspiration_active = false" << endl;
-    
-	for (tries = 0; tries <= max_tries; tries++) 
+
+	for (tries = 0; tries <= max_tries; tries++)
 	{
 		 settings();
-		 
+
 		 init();
-	 
+
 		 local_search(ls_no_improv_times);
 
-		 if (unsat_stack_fill_pointer==0) 
+		 if (unsat_stack_fill_pointer==0)
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
 		    else cout<<"c Sorry, something is wrong."<<endl;/////
@@ -1017,10 +1012,10 @@ int main(int argc, char* argv[])
 		print_solution();
     }
     else  cout<<"s UNKNOWN"<<endl;
-    
+
     cout<<"c solveSteps = "<<tries<<" tries + "<<step<<" steps (each try has "<<max_flips<<" steps)."<<endl;
     cout<<"c solveTime = "<<comp_time<<endl;
-	 
+
     free_memory();
 
     return 0;
