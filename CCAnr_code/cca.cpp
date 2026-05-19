@@ -726,6 +726,25 @@ void preprocess()
 }
 //end definition of preprocessor.h
 
+
+int count_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
+{
+	int nb_unsat_cc_clauses = 0;
+	for (int i = 0; i < nb_unsat_clauses; i++)
+	{
+		int clause = unsat_clauses[i];
+		for (int j = 0; j < clause_lit_count[clause]; j++)
+		{
+			if (conf_change[clause_lit[clause][j].var_num] == 1)
+			{
+				nb_unsat_cc_clauses++;
+				break;
+			}
+		}
+	}
+	return nb_unsat_cc_clauses;
+}
+
 int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
 {
 	int nb_unsat_cc_clauses = count_unsat_cc_clauses(unsat_clauses,nb_unsat_clauses);
