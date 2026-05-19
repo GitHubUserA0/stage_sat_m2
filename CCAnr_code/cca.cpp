@@ -817,7 +817,9 @@ void local_search(long long no_improv_times)
 {
 	int flipvar;
 	long long notime = 1 + no_improv_times;
-	
+	if (unsat_stack_fill_pointer==0)
+		return;
+
 	while(--notime)
 	{
 		step++;
@@ -831,15 +833,9 @@ void local_search(long long no_improv_times)
 			this_try_best_unsat_stack_fill_pointer = unsat_stack_fill_pointer;
 			notime = 1 + no_improv_times;
 		}
-		
-		if(unsat_stack_fill_pointer == 0)
-		{
-			return;
-		}
 	}
-     
-	return;
 }
+
 void default_settings()
 {
 	seed = 1;
