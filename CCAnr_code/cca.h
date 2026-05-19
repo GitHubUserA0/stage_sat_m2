@@ -35,7 +35,7 @@
 
 inline void unsat(int clause);
 inline void sat(int clause);
-void init();
+void init(int current_try);
 void flip(int flipvar);
 
 

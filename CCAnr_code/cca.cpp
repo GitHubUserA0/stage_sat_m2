@@ -334,15 +334,23 @@ inline void sat(int clause)
 	}
 }
 //initiation of the algorithm
-void init()
+void init(int current_try)
 {
 	int 		v,c;
 	int			i,j;
 	int			clause;
 
-	//Initialize edge weights
-	for (c = 0; c<num_clauses; c++)
-		clause_weight[c] = 1;
+	if(current_try==0)
+	{
+		//Initialize edge weights
+		for (c = 0; c<num_clauses; c++)
+			clause_weight[c] = 1;
+
+		//Initialize with random weights
+		//for (c = 0; c<num_clauses; c++)
+		//	clause_weight[c] = random();
+	}
+
 
 	//init unsat_stack
 	unsat_stack_fill_pointer = 0;
@@ -961,7 +969,7 @@ int main(int argc, char* argv[])
 	{
 		 settings();
 		 
-		 init();
+		 init(tries);
 	 
 		 local_search(ls_no_improv_times);
 
