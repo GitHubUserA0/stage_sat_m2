@@ -936,13 +936,7 @@ void local_search(long long no_improv_times)
 			notime = 1 + no_improv_times;
 		}
 
-		if(unsat_stack_fill_pointer == 0)
-		{
-			return;
-		}
 	}
-
-	return;
 }
 
 void default_settings()
