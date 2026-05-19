@@ -861,8 +861,8 @@ void local_search(long long no_improv_times)
 		}
 	}
 
-	return;
 }
+
 void default_settings()
 {
 	seed = 1;
