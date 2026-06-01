@@ -1,4 +1,4 @@
-SELECT hash,nb_vars,"verified-result",family,track FROM "results_non-rand_2022" WHERE
+SELECT hash,nb_vars,nb_clauses,"verified-result",family,track FROM "results_non-rand_2022" WHERE
 "verified-result"="sat" AND
 NOT(track like "%main_2024%" OR track like "%main_2023%")
 AND
