@@ -833,6 +833,11 @@ void local_search(long long no_improv_times)
 			this_try_best_unsat_stack_fill_pointer = unsat_stack_fill_pointer;
 			notime = 1 + no_improv_times;
 		}
+
+		if(unsat_stack_fill_pointer == 0)
+		{
+			return;
+		}
 	}
 }
 
