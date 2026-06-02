@@ -921,7 +921,7 @@ int main(int argc, char* argv[])
 	int		satisfy_flag=0;
 	struct 	tms start, stop;
     
-    cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;	
+    //cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;
 	
 	times(&start);
 
@@ -944,11 +944,11 @@ int main(int argc, char* argv[])
     
     scale_ave=(threshold+1)*q_scale; //
     
-	cout<<"c Instance: Number of variables = "<<num_vars<<endl;
-	cout<<"c Instance: Number of clauses = "<<num_clauses<<endl;
-	cout<<"c Instance: Ratio = "<<ratio<<endl;
-	cout<<"c Instance: Formula length = "<<formula_len<<endl;
-	cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<endl;
+	//cout<<"c Instance: Number of variables = "<<num_vars<<endl;
+	//cout<<"c Instance: Number of clauses = "<<num_clauses<<endl;
+	//cout<<"c Instance: Ratio = "<<ratio<<endl;
+	//cout<<"c Instance: Formula length = "<<formula_len<<endl;
+	//cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<endl;
 	cout<<"c Algorithmic: Random seed = "<<seed<<endl;
 	cout<<"c Algorithmic: ls_no_improv_steps = " << ls_no_improv_times << endl;
 	cout<<"c Algorithmic: swt_p = " << p_scale << endl;
