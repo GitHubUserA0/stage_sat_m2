@@ -1123,7 +1123,7 @@ int main(int argc, char* argv[])
     if(satisfy_flag==1)
     {
     	cout<<"s SATISFIABLE"<<endl;
-		print_solution();
+		//print_solution();
     }
     else  cout<<"s UNKNOWN"<<endl;
 
