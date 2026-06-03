@@ -770,6 +770,7 @@ int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
 				{
 					unsat_cc_clauses_stack[unsat_cc_clauses_stack_fill_pointer] = clause;
 					unsat_cc_clauses_stack_fill_pointer ++;
+					break;
 				}
 		}
 	}
