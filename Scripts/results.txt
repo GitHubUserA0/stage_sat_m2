@@ -1,0 +1,10 @@
+./test_instances/easy2.cnf c MAB: ArmNum=20 lambda=1 delay=20 gamma=0.9 s SATISFIABLE c solveSteps = 0 tries + 0 steps (each try has 2000000000 steps). c solveTime = 0.01
+
+./test_instances/easy3.cnf c MAB: ArmNum=20 lambda=1 delay=20 gamma=0.9 s SATISFIABLE c solveSteps = 0 tries + 0 steps (each try has 2000000000 steps). c solveTime = 0
+
+./test_instances/easy4.cnf c MAB: ArmNum=20 lambda=1 delay=20 gamma=0.9 s SATISFIABLE c solveSteps = 0 tries + 1 steps (each try has 2000000000 steps). c solveTime = 0.01
+
+./test_instances/easy5.cnf c MAB: ArmNum=20 lambda=1 delay=20 gamma=0.9 s SATISFIABLE c solveSteps = 0 tries + 0 steps (each try has 2000000000 steps). c solveTime = 0
+
+./test_instances/fff3f8c76467cdf9d92689969fd94281-mod2c-rand3bip-sat-240-2.shuffled-as.sat05-2519.cnf c Algorithmic: swt_threshold = 50 c Algorithmic: scale_ave = 35 c Algorithmic: aspiration_active = false c MAB: ArmNum=20 lambda=1 delay=20 gamma=0.9
+
