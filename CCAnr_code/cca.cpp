@@ -994,19 +994,19 @@ int main(int argc, char* argv[])
 
     scale_ave=(threshold+1)*q_scale; //
 
-	//cout<<"c Instance: Number of variables = "<<num_vars<<endl;
-	//cout<<"c Instance: Number of clauses = "<<num_clauses<<endl;
-	//cout<<"c Instance: Ratio = "<<ratio<<endl;
-	//cout<<"c Instance: Formula length = "<<formula_len<<endl;
-	//cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<endl;
-	cout<<"c Algorithmic: Random seed = "<<seed<<endl;
-	cout<<"c Algorithmic: ls_no_improv_steps = " << ls_no_improv_times << endl;
-	cout<<"c Algorithmic: swt_p = " << p_scale << endl;
-	cout<<"c Algorithmic: swt_q = " << q_scale << endl;
-	cout<<"c Algorithmic: swt_threshold = " << threshold << endl;
-	cout<<"c Algorithmic: scale_ave = " << scale_ave << endl;
-	if(aspiration_active) cout<<"c Algorithmic: aspiration_active = true" << endl;
-	else cout<<"c Algorithmic: aspiration_active = false" << endl;
+	//cout<<"c Instance: Number of variables = "<<num_vars<<";"<<endl;
+	//cout<<"c Instance: Number of clauses = "<<num_clauses<<";"<<endl;
+	//cout<<"c Instance: Ratio = "<<ratio<<";"<<endl;
+	//cout<<"c Instance: Formula length = "<<formula_len<<";"<<endl;
+	//cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<";"<<endl;
+	cout<<"c Algorithmic: Random seed = "<<seed<<";"<<endl;
+	cout<<"c Algorithmic: ls_no_improv_steps = " << ls_no_improv_times <<";"<< endl;
+	cout<<"c Algorithmic: swt_p = " << p_scale <<";"<< endl;
+	cout<<"c Algorithmic: swt_q = " << q_scale <<";"<< endl;
+	cout<<"c Algorithmic: swt_threshold = " << threshold <<";"<< endl;
+	cout<<"c Algorithmic: scale_ave = " << scale_ave <<";"<< endl;
+	if(aspiration_active) cout<<"c Algorithmic: aspiration_active = true" <<";"<< endl;
+	else cout<<"c Algorithmic: aspiration_active = false" <<";"<< endl;
 
 	for (tries = 0; tries <= max_tries; tries++)
 	{
@@ -1019,7 +1019,7 @@ int main(int argc, char* argv[])
 		 if (unsat_stack_fill_pointer==0)
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
-		    else cout<<"c Sorry, something is wrong."<<endl;/////
+		    else cout<<"c Sorry, something is wrong."<<";"<<endl;/////
 		 }
 	}
 
@@ -1028,13 +1028,13 @@ int main(int argc, char* argv[])
 
     if(satisfy_flag==1)
     {
-    	cout<<"s SATISFIABLE"<<endl;
+    	cout<<"s SATISFIABLE"<<";"<<endl;
 		//print_solution();
     }
-    else  cout<<"s UNKNOWN"<<endl;
+    else  cout<<"s UNKNOWN"<<";"<<endl;
 
-    cout<<"c solveSteps = "<<tries<<" tries + "<<step<<" steps (each try has "<<max_flips<<" steps)."<<endl;
-    cout<<"c solveTime = "<<comp_time<<endl;
+    cout<<"c solveSteps = "<<tries<<" tries + "<<step<<" steps (each try has "<<max_flips<<" steps)."<<";"<<endl;
+    cout<<"c solveTime = "<<comp_time<<";"<<endl;
 
     free_memory();
 
