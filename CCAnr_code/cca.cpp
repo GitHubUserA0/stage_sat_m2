@@ -729,7 +729,7 @@ void preprocess()
         var_lit[v][var_lit_count[v]].clause_num=-1;//new var_lit boundary
     }
 
-    cout<<"c unit propagation fixes "<<fix_var_count<<" variables, and delets "<<delete_clause_count<<" clauses"<<endl;
+    //cout<<"c unit propagation fixes "<<fix_var_count<<" variables, and delets "<<delete_clause_count<<" clauses"<<endl;
 
 }
 //end definition of preprocessor.h
@@ -952,19 +952,19 @@ int main(int argc, char* argv[])
     
     scale_ave=(threshold+1)*q_scale; //
     
-	//cout<<"c Instance: Number of variables = "<<num_vars<<endl;
-	//cout<<"c Instance: Number of clauses = "<<num_clauses<<endl;
-	//cout<<"c Instance: Ratio = "<<ratio<<endl;
-	//cout<<"c Instance: Formula length = "<<formula_len<<endl;
-	//cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<endl;
-	cout<<"c Algorithmic: Random seed = "<<seed<<endl;
-	cout<<"c Algorithmic: ls_no_improv_steps = " << ls_no_improv_times << endl;
-	cout<<"c Algorithmic: swt_p = " << p_scale << endl;
-	cout<<"c Algorithmic: swt_q = " << q_scale << endl;
-	cout<<"c Algorithmic: swt_threshold = " << threshold << endl;
-	cout<<"c Algorithmic: scale_ave = " << scale_ave << endl;
-	if(aspiration_active) cout<<"c Algorithmic: aspiration_active = true" << endl;
-	else cout<<"c Algorithmic: aspiration_active = false" << endl;
+	cout<<num_vars<<";"<<endl;
+	cout<<num_clauses<<";"<<endl;
+	cout<<ratio<<";"<<endl;
+	cout<<formula_len<<";"<<endl;
+	cout<<"c Instance: Avg (Min,Max) clause length = "<<avg_clause_len<<" ("<<min_clause_len<<","<<max_clause_len<<")"<<";"<<endl;
+	cout<<seed<<";"<<endl;
+	cout<<ls_no_improv_times <<";"<< endl;
+	cout<<p_scale <<";"<< endl;
+	cout<<q_scale <<";"<< endl;
+	cout<<threshold <<";"<< endl;
+	cout<<scale_ave <<";"<< endl;
+	if(aspiration_active) cout<<"true" <<";"<< endl;
+	else cout<<"false" <<";"<< endl;
     
 	for (tries = 0; tries <= max_tries; tries++) 
 	{
@@ -986,13 +986,13 @@ int main(int argc, char* argv[])
 
     if(satisfy_flag==1)
     {
-    	cout<<"s SATISFIABLE"<<endl;
+    	cout<<"SATISFIABLE"<<endl;
 		//print_solution();
     }
-    else  cout<<"s UNKNOWN"<<endl;
+    else  cout<<"UNKNOWN"<<endl;
     
     cout<<"c solveSteps = "<<tries<<" tries + "<<step<<" steps (each try has "<<max_flips<<" steps)."<<endl;
-    cout<<"c solveTime = "<<comp_time<<endl;
+    cout<<comp_time<<endl;
 	 
     free_memory();
 
