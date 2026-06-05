@@ -977,7 +977,7 @@ int main(int argc, char* argv[])
 		 if (unsat_stack_fill_pointer==0) 
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
-		    else cout<<"c Sorry, something is wrong."<<endl;/////
+		    else cout<<"c Sorry, something is wrong;"<<endl;/////
 		 }
 	}
 
