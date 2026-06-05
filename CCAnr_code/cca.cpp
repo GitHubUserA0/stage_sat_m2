@@ -1034,7 +1034,7 @@ int main(int argc, char* argv[])
     else  cout<<"UNKNOWN"<<";"<<endl;
 
     cout<<"c solveSteps = "<<tries<<" tries + "<<step<<" steps (each try has "<<max_flips<<" steps)."<<";"<<endl;
-    cout<<comp_time<<";"<<endl;
+    cout<<comp_time<<endl;
 
     free_memory();
 
