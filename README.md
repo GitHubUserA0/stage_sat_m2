@@ -1,11 +1,14 @@
 # Pondération de clauses et redémarrages dans la recherche locale pour SAT
 
-Le code est réparti en quatre branches, une branche par contribution.
+Le code est réparti en quatre branches, une branche par contribution : 
 
-Branche main : CCAnr version refactorisée
-Branche MABs : CCAnr version Multi-Armed-Bandit
-Branche choose_cc_clauses_only : CCAnr version CC_CLAUSES
-Branche Restart_keep_data : CCAnr version weight_conservation
+* Branche main : CCAnr version refactorisée
+
+* Branche MABs : CCAnr version Multi-Armed-Bandit
+
+* Branche choose_cc_clauses_only : CCAnr version CC_CLAUSES
+
+* Branche Restart_keep_data : CCAnr version weight_conservation
 
 Pour chaque branche, il suffit de télécharger le dépot. La compilation se fait via la commande "make" grâce à un makefile spécifique à chaque version (dans chaque branche, se trouve uniquement le makefile approprié).
 
