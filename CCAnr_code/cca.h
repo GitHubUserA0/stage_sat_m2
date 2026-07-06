@@ -35,9 +35,10 @@
 
 inline void unsat(int clause);
 inline void sat(int clause);
-void init();
+void init(int current_try);
 void flip(int flipvar);
-
+int* find_unsat_cc_clauses(int unsat_clauses[],int nb_unsat_clauses);
+int count_unsat_cc_clauses(int unsat_clauses[],int nb_unsat_clauses);
 
 #endif
 

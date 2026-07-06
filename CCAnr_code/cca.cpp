@@ -2,6 +2,8 @@
 #include "cca.h"
 #include "cw.h"
 #include "preprocessor.h"
+#include "mab.h"
+#include "contribs.h"
 
 #include <string.h>
 #include <sys/times.h> //these two h files are for linux
@@ -31,6 +33,8 @@ void free_memory()
 		delete[] var_lit[i];
 		delete[] var_neighbor[i];
 	}
+
+	if (mab) mab_free();
 }
 /*
  * Read in the problem.
@@ -333,16 +337,24 @@ inline void sat(int clause)
 		}
 	}
 }
+
+void inline reset_weights()
+{
+	int c;
+
+	for (c = 0; c < num_clauses; c++)
+		clause_weight[c] = 1;
+}
+
 //initiation of the algorithm
-void init()
+void init(int current_try)
 {
 	int 		v,c;
 	int			i,j;
 	int			clause;
 
-	//Initialize edge weights
-	for (c = 0; c<num_clauses; c++)
-		clause_weight[c] = 1;
+	if ( ! weight_conservation || current_try==0)
+		reset_weights();
 
 	//init unsat_stack
 	unsat_stack_fill_pointer = 0;
@@ -726,6 +738,161 @@ void preprocess()
 }
 //end definition of preprocessor.h
 
+static void mab_init()
+{
+	if (mab_V)       { free(mab_V);       mab_V       = NULL; }
+	if (mab_t)       { free(mab_t);       mab_t       = NULL; }
+	if (mab_history) { free(mab_history); mab_history = NULL; }
+
+	mab_V       = (double*) calloc(num_clauses, sizeof(double));
+	mab_t       = (int*)   calloc(num_clauses, sizeof(int));
+	mab_history = (int*)   malloc(delay_MAB   * sizeof(int));
+
+	if (!mab_V || !mab_t || !mab_history)
+	{
+		fprintf(stderr, "mab_init: malloc/calloc failed\n");
+		exit(1);
+	}
+
+
+	for (int i = 0; i < num_clauses; i++)
+		mab_V[i] = 1.0;
+
+	for (int i = 0; i < delay_MAB; i++)
+		mab_history[i] = -1;
+
+	mab_hist_pointer   = 0;
+	mab_N          = 0;
+	mab_prev_unsat = num_clauses;
+	mab_best_unsat = num_clauses;
+	mab_initialized = true;
+}
+
+inline int pull_arm_MAB(int unsat_clauses[], int nb_unsat_clauses)
+{
+	if (nb_unsat_clauses == 0)
+		return unsat_clauses[0];
+
+	if (!mab_initialized)
+		mab_init();
+
+
+	int cur_unsat = nb_unsat_clauses;
+	if (cur_unsat < mab_best_unsat)
+		mab_best_unsat = cur_unsat;
+
+
+	double reward = 0.0;
+	if (mab_prev_unsat > cur_unsat)
+	{
+		double denom = (double)(mab_prev_unsat - mab_best_unsat) + 1.0;
+		reward = (double)(mab_prev_unsat - cur_unsat) / denom;
+	}
+
+	if (reward != 0.0)
+	{
+		double discount = 1.0;
+
+		for (int d = 0; d < delay_MAB; d++)
+		{
+			int pos = (mab_hist_pointer - 1 - d + delay_MAB * 2) % delay_MAB;
+			int arm = mab_history[pos];
+			if (arm < 0) break;
+			mab_V[arm] += discount * reward;
+			discount    *= gamma_MAB;
+		}
+	}
+	mab_prev_unsat = cur_unsat;
+	mab_N++;
+
+
+	double ln_N = (mab_N > 1) ? log((double)mab_N) : 0.0;
+
+	int    best_clause = unsat_clauses[rand() % nb_unsat_clauses];
+	double best_ucb    = -1e18;
+
+	int sample_size = (ArmNum_MAB < nb_unsat_clauses) ? ArmNum_MAB : nb_unsat_clauses;
+	for (int i = 0; i < sample_size; i++)
+	{
+		int clause_index    = rand() % nb_unsat_clauses;
+		int clause = unsat_clauses[clause_index];
+
+		double ucb = mab_V[clause]
+		           + lambda_MAB * sqrt(ln_N / (double)(mab_t[clause] + 1));
+
+		if (ucb > best_ucb)
+		{
+			best_ucb    = ucb;
+			best_clause = clause;
+		}
+	}
+
+	mab_history[mab_hist_pointer] = best_clause;
+	mab_hist_pointer = (mab_hist_pointer + 1) % delay_MAB;
+	mab_t[best_clause]++;
+
+	return best_clause;
+}
+
+static void mab_free()
+{
+	if (mab_V)       { free(mab_V);       mab_V       = NULL; }
+	if (mab_t)       { free(mab_t);       mab_t       = NULL; }
+	if (mab_history) { free(mab_history); mab_history = NULL; }
+	mab_initialized = false;
+}
+
+
+int count_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
+{
+	int nb_unsat_cc_clauses = 0;
+	for (int i = 0; i < nb_unsat_clauses; i++)
+	{
+		int clause = unsat_clauses[i];
+		for (int j = 0; j < clause_lit_count[clause]; j++)
+		{
+			if (conf_change[clause_lit[clause][j].var_num] == 1)
+			{
+				nb_unsat_cc_clauses++;
+				break;
+			}
+		}
+	}
+	return nb_unsat_cc_clauses;
+}
+
+int* find_unsat_cc_clauses(int unsat_clauses[], int nb_unsat_clauses)
+{
+	int nb_unsat_cc_clauses = count_unsat_cc_clauses(unsat_clauses,nb_unsat_clauses);
+	int* unsat_cc_clauses_stack = (int*)malloc(sizeof(int) * nb_unsat_cc_clauses);
+
+	if ( !unsat_cc_clauses_stack )
+	{
+		printf("malloc failed\n");
+		return NULL;
+	}
+
+	unsat_cc_clauses_stack_fill_pointer = 0;
+
+	for (int unsat_clause_index = 0 ; unsat_clause_index < nb_unsat_clauses ; unsat_clause_index ++)
+	{
+		int clause = unsat_clauses[unsat_clause_index];
+		int clause_size = clause_lit_count[clause];
+
+		for (int lit_index = 0 ; lit_index < clause_size ; lit_index ++)
+		{
+			lit current_lit = clause_lit[clause][lit_index];
+			if (conf_change[current_lit.var_num]==1)
+			{
+				unsat_cc_clauses_stack[unsat_cc_clauses_stack_fill_pointer] = clause;
+				unsat_cc_clauses_stack_fill_pointer ++;
+				break;
+			}
+		}
+	}
+	return unsat_cc_clauses_stack;
+}
+
 
 static int pick_var(void)
 {
@@ -782,7 +949,17 @@ static int pick_var(void)
 
 	/*focused random walk*/
 
-	c = unsat_stack[rand()%unsat_stack_fill_pointer];
+	if (mab) c = pull_arm_MAB(unsat_stack,unsat_stack_fill_pointer);
+
+	else if (cc_unsat)
+	{
+		int * unsat_cc_clauses_stack = find_unsat_cc_clauses(unsat_stack, unsat_stack_fill_pointer);
+		c = unsat_cc_clauses_stack[rand()%unsat_cc_clauses_stack_fill_pointer];
+	}
+
+	else
+		c = unsat_stack[rand()%unsat_stack_fill_pointer];
+
 	clause_c = clause_lit[c];
 	best_var = clause_c[0].var_num;
 	for(k=1; k<clause_lit_count[c]; ++k)
@@ -842,6 +1019,10 @@ void default_settings()
 	threshold = 50;
 	
 	aspiration_active = false; //
+
+	mab = false;
+	cc_unsat = false;
+	weight_conservation = false;
 }
 bool parse_arguments(int argc, char ** argv)
 {
@@ -869,16 +1050,11 @@ bool parse_arguments(int argc, char ** argv)
 		
 		else if(strcmp(argv[i],"-aspiration")==0)
 		{
-			i++;
 			if(i>=argc) return false;
-			int tmp;
-			sscanf(argv[i], "%d", &tmp);
-			if (tmp==1)
-				aspiration_active = true;
-			else 	aspiration_active = false;
+			aspiration_active = true;
 			continue;
 		}
-		
+
 		else if(strcmp(argv[i],"-swt_threshold")==0)
 		{
 			i++;
@@ -886,6 +1062,7 @@ bool parse_arguments(int argc, char ** argv)
 			sscanf(argv[i], "%d", &threshold);
 			continue;
 		}
+
 		else if(strcmp(argv[i],"-swt_p")==0)
 		{
 			i++;
@@ -893,6 +1070,7 @@ bool parse_arguments(int argc, char ** argv)
 			sscanf(argv[i], "%f", &p_scale);
 			continue;
 		}
+
 		else if(strcmp(argv[i],"-swt_q")==0)
 		{
 			i++;
@@ -905,6 +1083,27 @@ bool parse_arguments(int argc, char ** argv)
 			i++;
 			if(i>=argc) return false;
 			sscanf(argv[i], "%lld", &ls_no_improv_times);
+			continue;
+		}
+
+		else if(strcmp(argv[i],"-mab")==0)
+		{
+			if(i>=argc) return false;
+			mab = true;
+			continue;
+		}
+
+		else if(strcmp(argv[i],"-cc_unsat")==0)
+		{
+			if(i>=argc) return false;
+			cc_unsat = true;
+			continue;
+		}
+
+		else if(strcmp(argv[i],"-weight_conservation")==0)
+		{
+			if(i>=argc) return false;
+			weight_conservation = true;
 			continue;
 		}
 		else return false;
@@ -962,7 +1161,7 @@ int main(int argc, char* argv[])
 	{
 		 settings();
 		 
-		 init();
+		 init(tries);
 	 
 		 local_search(ls_no_improv_times);
 
