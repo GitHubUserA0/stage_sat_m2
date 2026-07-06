@@ -1134,6 +1134,11 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	if (mab && cc_unsat)
+	{
+		cout<<"ERROR ! : -mab and -cc_unsat are incompatible between them, please choose only one of them."<<endl;
+		return -1;
+	}
 	
     srand(seed);
     
