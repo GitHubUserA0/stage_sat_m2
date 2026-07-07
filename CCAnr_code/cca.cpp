@@ -45,8 +45,8 @@ int build_instance(char *filename)
 	char    tempstr1[10];
 	char    tempstr2[10];
 	int     cur_lit;
-	int     i,j;
-	int		v,c;//var, clause
+	int     i;
+	int		v,c;
 
 	ifstream infile(filename);
 	if(!infile)
@@ -351,7 +351,6 @@ void init(int current_try)
 {
 	int 		v,c;
 	int			i,j;
-	int			clause;
 
 	if ( ! weight_conservation || current_try==0)
 		reset_weights();
@@ -370,8 +369,7 @@ void init(int current_try)
 			time_stamp[v] = 0;
 			conf_change[v] = 1;
 			unsat_app_count[v] = 0;
-
-			//pscore[v] = 0;
+;
 		}
 
 	}
@@ -424,7 +422,7 @@ void init(int current_try)
 	for (v=1; v<=num_vars; v++)
 	{
 		if(fix[v]==1)  continue;
-		if(score[v]>0)// && conf_change[v]==1)
+		if(score[v]>0)
 		{
 			already_in_goodvar_stack[v] = 1;
 			push(v,goodvar_stack);
@@ -443,7 +441,6 @@ void flip(int flipvar)
 {
 	cur_soln[flipvar] = 1 - cur_soln[flipvar];
 
-	int i,j;
 	int v,c;
 
 	lit* clause_c;
@@ -468,7 +465,7 @@ void flip(int flipvar)
 				sat(c);
 			}
 		}
-		else // cur_soln[flipvar] != cur_lit.sense
+		else
 		{
 			--sat_count[c];
 			if (sat_count[c] == 1) //sat_count from 2 to 1
@@ -595,7 +592,7 @@ void set_clause_weighting()
 	}
 	else
 	{
-		if(q_scale<0.5)  //0
+		if(q_scale<0.5)
 			q_scale = 0.7;
 		else
 			q_scale = 0;
@@ -905,8 +902,6 @@ static int pick_var(void)
 	if(goodvar_stack_fill_pointer>0)
 	{
 
-		//if(goodvar_stack_fill_pointer<balancePar)
-		//{
 		best_var = goodvar_stack[0];
 		for(i=1; i<goodvar_stack_fill_pointer; ++i)
 		{
@@ -977,11 +972,7 @@ static int pick_var(void)
 
 	return best_var;
 }
-//set functions in the algorithm
-void settings()
-{
 
-}
 void local_search(long long no_improv_times)
 {
 	int flipvar;
@@ -1146,7 +1137,7 @@ int main(int argc, char* argv[])
 
 	build_neighbor_relation();
 
-	scale_ave=(threshold+1)*q_scale; //
+	scale_ave=(threshold+1)*q_scale;
     
 	cout<<num_vars<<";"<<endl;
 	cout<<num_clauses<<";"<<endl;
@@ -1177,8 +1168,7 @@ int main(int argc, char* argv[])
     
 	for (tries = 0; tries <= max_tries; tries++) 
 	{
-		 settings();
-		 
+
 		 init(tries);
 	 
 		 local_search(ls_no_improv_times);
@@ -1186,7 +1176,7 @@ int main(int argc, char* argv[])
 		 if (unsat_stack_fill_pointer==0) 
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
-		    else cout<<"c Sorry, something is wrong;"<<endl;/////
+		    else cout<<"c Sorry, something is wrong;"<<endl;
 		 }
 	}
 
