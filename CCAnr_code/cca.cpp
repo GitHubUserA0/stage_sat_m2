@@ -795,10 +795,7 @@ static int pick_var(void)
 	return best_var;
 }
 //set functions in the algorithm
-void settings()
-{
 
-}
 void local_search(long long no_improv_times)
 {
 	int flipvar;
@@ -954,8 +951,7 @@ int main(int argc, char* argv[])
     
 	for (tries = 0; tries <= max_tries; tries++) 
 	{
-		 settings();
-		 
+
 		 init();
 	 
 		 local_search(ls_no_improv_times);
