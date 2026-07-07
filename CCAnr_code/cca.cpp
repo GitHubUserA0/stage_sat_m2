@@ -41,8 +41,8 @@ int build_instance(char *filename)
 	char    tempstr1[10];
 	char    tempstr2[10];
 	int     cur_lit;
-	int     i,j;
-	int		v,c;//var, clause
+	int     i;
+	int		v,c;
 
 	ifstream infile(filename);
 	if(!infile)
@@ -431,7 +431,6 @@ void flip(int flipvar)
 {
 	cur_soln[flipvar] = 1 - cur_soln[flipvar];
 
-	int i,j;
 	int v,c;
 
 	lit* clause_c;
@@ -456,7 +455,7 @@ void flip(int flipvar)
 				sat(c);
 			}
 		}
-		else // cur_soln[flipvar] != cur_lit.sense
+		else
 		{
 			--sat_count[c];
 			if (sat_count[c] == 1) //sat_count from 2 to 1
@@ -515,7 +514,7 @@ void flip(int flipvar)
 //begin definition of cw.h functions
 void smooth_clause_weights()
 {
-	int i,j,c,v;
+	int j,c,v;
 	int new_total_weight=0;
 
 	for (v=1; v<=num_vars; ++v)
@@ -583,7 +582,7 @@ void set_clause_weighting()
 	}
 	else
 	{
-		if(q_scale<0.5)  //0
+		if(q_scale<0.5)
 			q_scale = 0.7;
 		else
 			q_scale = 0;
@@ -598,13 +597,12 @@ void set_clause_weighting()
 void unit_propagation()
 {
     lit uc_lit;
-    int uc_clause;
     int uc_var;
     bool uc_sense;
 
-    int c,v;
+    int c;
     int i,j;
-    lit cur, cur_c;
+    lit cur;
 
 
     //while (unitclause_queue_beg_pointer < unitclause_queue_end_pointer)
@@ -967,7 +965,7 @@ bool parse_arguments(int argc, char ** argv)
 }
 int main(int argc, char* argv[])
 {
-	int     seed,i;
+	int     seed;
 	int		satisfy_flag=0;
 	struct 	tms start, stop;
 
@@ -992,7 +990,7 @@ int main(int argc, char* argv[])
 
     build_neighbor_relation();
 
-    scale_ave=(threshold+1)*q_scale; //
+    scale_ave=(threshold+1)*q_scale;
 
 	cout<<num_vars<<";"<<endl;
 	cout<<num_clauses<<";"<<endl;
@@ -1019,7 +1017,7 @@ int main(int argc, char* argv[])
 		 if (unsat_stack_fill_pointer==0)
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
-		    else cout<<"c Sorry, something is wrong."<<";"<<endl;/////
+		    else cout<<"c Sorry, something is wrong."<<";"<<endl;
 		 }
 	}
 
