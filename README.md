@@ -1,6 +1,8 @@
 # Pondération de clauses et redémarrages dans la recherche locale pour SAT
 
-Le code est réparti en quatre branches, une branche par contribution : 
+https://github.com/GitHubUserA0/stage_sat_m2/
+
+Le code est réparti en cinq branches, une branche par contribution et une branche les fusionnant toutes : 
 
 * Branche main : CCAnr version refactorisée
 
@@ -9,6 +11,8 @@ Le code est réparti en quatre branches, une branche par contribution :
 * Branche choose_cc_clauses_only : CCAnr version CC_CLAUSES
 
 * Branche Restart_keep_data : CCAnr version weight_conservation
+
+* Branche general_versions : CCAnr fusion de toutes les contributions
 
 Pour chaque branche, il suffit de télécharger le dépot. La compilation se fait via la commande "make" grâce à un makefile spécifique à chaque version (dans chaque branche, se trouve uniquement le makefile approprié).
 
