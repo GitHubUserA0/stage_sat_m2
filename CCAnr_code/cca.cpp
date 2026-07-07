@@ -41,8 +41,8 @@ int build_instance(char *filename)
 	char    tempstr1[10];
 	char    tempstr2[10];
 	int     cur_lit;
-	int     i,j;
-	int		v,c;//var, clause
+	int     i;
+	int		v,c;
 
 	ifstream infile(filename);
 	if(!infile)
@@ -338,7 +338,6 @@ void init()
 {
 	int 		v,c;
 	int			i,j;
-	int			clause;
 
 	//Initialize edge weights
 	for (c = 0; c<num_clauses; c++)
@@ -359,7 +358,6 @@ void init()
 			conf_change[v] = 1;
 			unsat_app_count[v] = 0;
 
-			//pscore[v] = 0;
 		}
 
 	}
@@ -412,7 +410,7 @@ void init()
 	for (v=1; v<=num_vars; v++)
 	{
 		if(fix[v]==1)  continue;
-		if(score[v]>0)// && conf_change[v]==1)
+		if(score[v]>0)
 		{
 			already_in_goodvar_stack[v] = 1;
 			push(v,goodvar_stack);
@@ -431,7 +429,6 @@ void flip(int flipvar)
 {
 	cur_soln[flipvar] = 1 - cur_soln[flipvar];
 
-	int i,j;
 	int v,c;
 
 	lit* clause_c;
@@ -456,7 +453,7 @@ void flip(int flipvar)
 				sat(c);
 			}
 		}
-		else // cur_soln[flipvar] != cur_lit.sense
+		else
 		{
 			--sat_count[c];
 			if (sat_count[c] == 1) //sat_count from 2 to 1
@@ -583,7 +580,7 @@ void set_clause_weighting()
 	}
 	else
 	{
-		if(q_scale<0.5)  //0
+		if(q_scale<0.5)
 			q_scale = 0.7;
 		else
 			q_scale = 0;
@@ -598,13 +595,12 @@ void set_clause_weighting()
 void unit_propagation()
 {
     lit uc_lit;
-    int uc_clause;
     int uc_var;
     bool uc_sense;
 
-    int c,v;
+    int c;
     int i,j;
-    lit cur, cur_c;
+    lit cur;
 
 
     //while (unitclause_queue_beg_pointer < unitclause_queue_end_pointer)
@@ -738,8 +734,6 @@ static int pick_var(void)
 	if(goodvar_stack_fill_pointer>0)
 	{
 
-		//if(goodvar_stack_fill_pointer<balancePar)
-		//{
 		best_var = goodvar_stack[0];
 		for(i=1; i<goodvar_stack_fill_pointer; ++i)
 		{
@@ -841,7 +835,7 @@ void default_settings()
 	q_scale = 0.7;
 	threshold = 50;
 	
-	aspiration_active = false; //
+	aspiration_active = false;
 }
 bool parse_arguments(int argc, char ** argv)
 {
@@ -969,7 +963,7 @@ int main(int argc, char* argv[])
 		 if (unsat_stack_fill_pointer==0) 
 		 {
 		 	if(verify_sol()==1) {satisfy_flag = 1; break;}
-		    else cout<<"c Sorry, something is wrong;"<<endl;/////
+		    else cout<<"c Sorry, something is wrong;"<<endl;
 		 }
 	}
 
