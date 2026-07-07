@@ -338,7 +338,6 @@ void init()
 {
 	int 		v,c;
 	int			i,j;
-	int			clause;
 
 	//Initialize edge weights
 	for (c = 0; c<num_clauses; c++)
@@ -359,7 +358,6 @@ void init()
 			conf_change[v] = 1;
 			unsat_app_count[v] = 0;
 
-			//pscore[v] = 0;
 		}
 
 	}
@@ -412,7 +410,7 @@ void init()
 	for (v=1; v<=num_vars; v++)
 	{
 		if(fix[v]==1)  continue;
-		if(score[v]>0)// && conf_change[v]==1)
+		if(score[v]>0)
 		{
 			already_in_goodvar_stack[v] = 1;
 			push(v,goodvar_stack);
@@ -849,10 +847,7 @@ static int pick_var(void)
 	return best_var;
 }
 //set functions in the algorithm
-void settings()
-{
 
-}
 void local_search(long long no_improv_times)
 {
 	int flipvar;
@@ -1008,8 +1003,6 @@ int main(int argc, char* argv[])
 
 	for (tries = 0; tries <= max_tries; tries++)
 	{
-		 settings();
-
 		 init();
 
 		 local_search(ls_no_improv_times);
