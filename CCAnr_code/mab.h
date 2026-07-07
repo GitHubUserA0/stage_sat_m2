@@ -17,4 +17,5 @@ static bool    mab_initialized = false;
 
 static void mab_init();
 static void mab_free();
+void mab_default_settings();
 #endif //WORKING_REPO_MAB_H

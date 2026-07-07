@@ -524,7 +524,7 @@ void flip(int flipvar)
 //begin definition of cw.h functions
 void smooth_clause_weights()
 {
-	int i,j,c,v;
+	int j,c,v;
 	int new_total_weight=0;
 
 	for (v=1; v<=num_vars; ++v)
@@ -607,13 +607,12 @@ void set_clause_weighting()
 void unit_propagation()
 {
     lit uc_lit;
-    int uc_clause;
     int uc_var;
     bool uc_sense;
 
-    int c,v;
+    int c;
     int i,j;
-    lit cur, cur_c;
+    lit cur;
 
 
     //while (unitclause_queue_beg_pointer < unitclause_queue_end_pointer)
@@ -1015,6 +1014,14 @@ void default_settings()
 	cc_unsat = false;
 	weight_conservation = false;
 }
+
+void mab_default_settings()
+{
+	ArmNum_MAB = 20;
+	lambda_MAB = 1.0;
+	delay_MAB  = 20;
+	gamma_MAB  = 0.9;
+}
 bool parse_arguments(int argc, char ** argv)
 {
 
@@ -1081,6 +1088,32 @@ bool parse_arguments(int argc, char ** argv)
 		{
 			if(i>=argc) return false;
 			mab = true;
+			mab_default_settings();
+			continue;
+		}
+
+		else if(strcmp(argv[i],"-mab_arms")==0){
+			i++;
+			if(i>=argc) return false;
+			sscanf(argv[i], "%d", &ArmNum_MAB);
+			continue;
+		}
+		else if(strcmp(argv[i],"-mab_lambda")==0){
+			i++;
+			if(i>=argc) return false;
+			sscanf(argv[i], "%lf", &lambda_MAB);
+			continue;
+		}
+		else if(strcmp(argv[i],"-mab_delay")==0){
+			i++;
+			if(i>=argc) return false;
+			sscanf(argv[i], "%d", &delay_MAB);
+			continue;
+		}
+		else if(strcmp(argv[i],"-mab_gamma")==0){
+			i++;
+			if(i>=argc) return false;
+			sscanf(argv[i], "%lf", &gamma_MAB);
 			continue;
 		}
 
@@ -1107,7 +1140,7 @@ bool parse_arguments(int argc, char ** argv)
 }
 int main(int argc, char* argv[])
 {
-	int     seed,i;
+	int     seed;
 	int		satisfy_flag=0;
 	struct 	tms start, stop;
     
