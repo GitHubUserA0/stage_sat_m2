@@ -1018,7 +1018,7 @@ void default_settings()
 	q_scale = 0.7;
 	threshold = 50;
 	
-	aspiration_active = false; //
+	aspiration_active = false;
 
 	mab = false;
 	cc_unsat = false;
@@ -1120,8 +1120,8 @@ int main(int argc, char* argv[])
 	int		satisfy_flag=0;
 	struct 	tms start, stop;
     
-    //cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;
-	
+	//cout<<"c This is CCAnr 2.0 [Version: 2018.01.28] [Author: Shaowei Cai]."<<endl;
+
 	times(&start);
 
 	bool ret = parse_arguments(argc, argv);
@@ -1139,14 +1139,14 @@ int main(int argc, char* argv[])
 		cout<<"ERROR ! : -mab and -cc_unsat are incompatible between them, please choose only one of them."<<endl;
 		return -1;
 	}
-	
-    srand(seed);
-    
-    if(unitclause_queue_end_pointer>0) preprocess();
-    
-    build_neighbor_relation();
-    
-    scale_ave=(threshold+1)*q_scale; //
+
+	srand(seed);
+
+	if(unitclause_queue_end_pointer>0) preprocess();
+
+	build_neighbor_relation();
+
+	scale_ave=(threshold+1)*q_scale; //
     
 	cout<<num_vars<<";"<<endl;
 	cout<<num_clauses<<";"<<endl;
@@ -1160,6 +1160,19 @@ int main(int argc, char* argv[])
 	cout<<threshold <<";"<< endl;
 	cout<<scale_ave <<";"<< endl;
 	if(aspiration_active) cout<<"true" <<";"<< endl;
+	else cout<<"false" <<";"<< endl;
+	if (weight_conservation) cout<<"true" <<";"<< endl;
+	else cout<<"false" <<";"<< endl;
+	if (cc_unsat) cout<<"true" <<";"<< endl;
+	else cout<<"false" <<";"<< endl;
+	if (mab)
+	{
+		cout<<"true" <<";"<< endl;
+		cout<<ArmNum_MAB<<";"<<endl;
+		cout<<lambda_MAB<<";"<<endl;
+		cout<<delay_MAB<<";"<<endl;
+		cout<<gamma_MAB<<";"<<endl;
+	}
 	else cout<<"false" <<";"<< endl;
     
 	for (tries = 0; tries <= max_tries; tries++) 
